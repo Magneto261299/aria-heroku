@@ -40,7 +40,7 @@ setEventCallback(eventRegex.commandsRegex.start, eventRegex.commandsRegexNoName.
   }
 });
 
-setEventCallback(eventRegex.commandsRegex.mirrorTar, eventRegex.commandsRegexNoName.mirrorTar, (msg, match) => {
+setEventCallback(eventRegex.commandsRegex.zip, eventRegex.commandsRegexNoName.zip, (msg, match) => {
   if (msgTools.isAuthorized(msg) < 0) {
     msgTools.sendUnauthorizedMessage(bot, msg);
   } else {
@@ -48,13 +48,14 @@ setEventCallback(eventRegex.commandsRegex.mirrorTar, eventRegex.commandsRegexNoN
   }
 });
 
-setEventCallback(eventRegex.commandsRegex.mirror, eventRegex.commandsRegexNoName.mirror, (msg, match) => {
+setEventCallback(eventRegex.commandsRegex.darpan, eventRegex.commandsRegexNoName.darpan, (msg, match) => {
   if (msgTools.isAuthorized(msg) < 0) {
     msgTools.sendUnauthorizedMessage(bot, msg);
   } else {
     mirror(msg, match);
   }
 });
+
 
 setEventCallback(eventRegex.commandsRegex.disk, eventRegex.commandsRegexNoName.disk, (msg) => {
   if (msgTools.isAuthorized(msg) < 0) {
@@ -88,7 +89,19 @@ function mirror(msg: TelegramBot.Message, match: RegExpExecArray, isTar?: boolea
   }
 }
 
-setEventCallback(eventRegex.commandsRegex.mirrorStatus, eventRegex.commandsRegexNoName.mirrorStatus, (msg) => {
+function mirror(msg: TelegramBot.Message, match: RegExpExecArray, isTar?: boolean): void {
+  if (websocketOpened) {
+    if (downloadUtils.isDownloadAllowed(match[2])) {
+      prepDownload(msg, match[2], isTar);
+    } else {
+      msgTools.sendMessage(bot, msg, `Download failed. Blacklisted URL.`);
+    }
+  } else {
+    msgTools.sendMessage(bot, msg, `Websocket isn't open. Can't download`);
+  }
+}
+
+setEventCallback(eventRegex.commandsRegex.sthiti, eventRegex.commandsRegexNoName.sthiti, (msg) => {
   if (msgTools.isAuthorized(msg) < 0) {
     msgTools.sendUnauthorizedMessage(bot, msg);
   } else {
@@ -96,13 +109,13 @@ setEventCallback(eventRegex.commandsRegex.mirrorStatus, eventRegex.commandsRegex
   }
 });
 
-setEventCallback(eventRegex.commandsRegex.list, eventRegex.commandsRegexNoName.list, (msg, match) => {
+setEventCallback(eventRegex.commandsRegex.suchi, eventRegex.commandsRegexNoName.suchi, (msg, match) => {
   if (msgTools.isAuthorized(msg) < 0) {
     msgTools.sendUnauthorizedMessage(bot, msg);
   } else {
     driveList.listFiles(match[2], (err, res) => {
       if (err) {
-        msgTools.sendMessage(bot, msg, 'Failed to fetch the list of files');
+        msgTools.sendMessage(bot, msg, 'Failed to fetch the suchi of files');
       } else {
         msgTools.sendMessage(bot, msg, res, 60000);
       }
@@ -110,7 +123,7 @@ setEventCallback(eventRegex.commandsRegex.list, eventRegex.commandsRegexNoName.l
   }
 });
 
-setEventCallback(eventRegex.commandsRegex.getFolder, eventRegex.commandsRegexNoName.getFolder, (msg) => {
+setEventCallback(eventRegex.commandsRegex.folder, eventRegex.commandsRegexNoName.folder, (msg) => {
   if (msgTools.isAuthorized(msg) < 0) {
     msgTools.sendUnauthorizedMessage(bot, msg);
   } else {
@@ -120,7 +133,7 @@ setEventCallback(eventRegex.commandsRegex.getFolder, eventRegex.commandsRegexNoN
   }
 });
 
-setEventCallback(eventRegex.commandsRegex.cancelMirror, eventRegex.commandsRegexNoName.cancelMirror, (msg) => {
+setEventCallback(eventRegex.commandsRegex.kill, eventRegex.commandsRegexNoName.kill, (msg) => {
   var authorizedCode = msgTools.isAuthorized(msg);
   if (msg.reply_to_message) {
     var dlDetails = dlManager.getDownloadByMsgId(msg.reply_to_message);
@@ -139,15 +152,15 @@ setEventCallback(eventRegex.commandsRegex.cancelMirror, eventRegex.commandsRegex
         msgTools.sendUnauthorizedMessage(bot, msg);
       }
     } else {
-      msgTools.sendMessage(bot, msg, `Reply to the command message for the download that you want to cancel.` +
+      msgTools.sendMessage(bot, msg, `Reply to the command message for the download that you want to kill.` +
         ` Also make sure that the download is even active.`);
     }
   } else {
-    msgTools.sendMessage(bot, msg, `Reply to the command message for the download that you want to cancel.`);
+    msgTools.sendMessage(bot, msg, `Reply to the command message for the download that you want to kill.`);
   }
 });
 
-setEventCallback(eventRegex.commandsRegex.cancelAll, eventRegex.commandsRegexNoName.cancelAll, (msg) => {
+setEventCallback(eventRegex.commandsRegex.killall, eventRegex.commandsRegexNoName.killall, (msg) => {
   var authorizedCode = msgTools.isAuthorized(msg, true);
   if (authorizedCode === 0) {
     // One of SUDO_USERS. Cancel all downloads
