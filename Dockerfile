@@ -19,9 +19,4 @@ RUN mkdir /bot
 RUN chmod 777 /bot
 WORKDIR /bot
 
-RUN git clone https://github.com/Prakasaka/aria-telegram-mirror-bot /bot
-
-COPY ./src/.constants.js /bot/src/
-COPY ./aria*.sh ./client_secret.json ./credentials.json ./start.sh /bot/
-
 CMD ["bash","start.sh"]
